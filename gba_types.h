@@ -1,3 +1,5 @@
+//PROVIDED BY JAMIE D STEWART
+
 //---------------------------------------------------------------------------------
 // This is a small header file used to define types that are used for GBA development
 // these types are named according to their signedness and their bit length
