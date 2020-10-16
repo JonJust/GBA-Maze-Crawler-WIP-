@@ -11,8 +11,6 @@
 #define VIDEOMODE_3 0x0003
 #define BG_ENABLE2 0x0400
 
-#define REG_VCOUNT *((volatile unsigned short*)(0x04000006))
-
 #define SCREENBUFFER ((unsigned short*)(0x06000000))
 #define SCREEN_W 240
 #define SCREEN_H 160
@@ -189,13 +187,10 @@ void clearTile2D(v_u32 xPos, v_u32 yPos)
 	// Draws tiles in the 2-D plane
 	//(Py pos it bottom-left indexed)
 	v_u32 x,y;
-	for(x = xPos; x < (xPos + TILE_SIZE - 1); ++x){
-
-		for( y = yPos; y < (yPos + TILE_SIZE - 1); ++y){
-
-			SCREENBUFFER[x+y*SCREEN_W] = setColor(10,10,10);
-
-		}
+	for(x = xPos; x < (xPos + TILE_SIZE - 1); ++x)
+	{
+		for( y = yPos; y < (yPos + TILE_SIZE - 1); ++y) SCREENBUFFER[x+y*SCREEN_W] = setColor(10,10,10);
+		
 	}
 
 }
@@ -208,10 +203,8 @@ void clearStage2D()
 	{
 		for(y = 0; y <= (160/TILE_SIZE) - 1; ++y)
 		{
-			if (renderMatrix[x][y] == 1 || renderMatrix[x][y] == 2)
-			{
-				clearTile2D(x*TILE_SIZE,y*TILE_SIZE);
-			}
+			if (renderMatrix[x][y] == 1 || renderMatrix[x][y] == 2) clearTile2D(x*TILE_SIZE,y*TILE_SIZE);
+
 		}
 	}
 }
@@ -227,24 +220,20 @@ void drawTile2D(v_u32 xPos, v_u32 yPos, v_u32 type)
 	{
 		case 1:
 			
-		for(x = xPos; x < (xPos + TILE_SIZE - 1); ++x){
-			for( y = yPos; y < (yPos + TILE_SIZE - 1); ++y){
+		for(x = xPos; x < (xPos + TILE_SIZE - 1); ++x)
+		{
+			for( y = yPos; y < (yPos + TILE_SIZE - 1); ++y) SCREENBUFFER[x+y*SCREEN_W] = setColor(0x1F,x,y);
 
-			SCREENBUFFER[x+y*SCREEN_W] = setColor(0x1F,x,y);
-
-			}
 		}
 
 			break;
 
 		case 2:
 			
-		for(x = xPos; x < (xPos + TILE_SIZE - 1); ++x){
-			for( y = yPos; y < (yPos + TILE_SIZE - 1); ++y){
+		for(x = xPos; x < (xPos + TILE_SIZE - 1); ++x)
+		{
+			for( y = yPos; y < (yPos + TILE_SIZE - 1); ++y) SCREENBUFFER[x+y*SCREEN_W] = setColor(y,x,0);
 
-			SCREENBUFFER[x+y*SCREEN_W] = setColor(y,x,0);
-
-			}
 		}
 
 			break;
@@ -262,10 +251,7 @@ void renderStage2D()
 	{
 		for(y = 0; y <= (160/TILE_SIZE) - 1; ++y)
 		{
-			if (renderMatrix[x][y] == 1)
-			{
-				drawTile2D(x*TILE_SIZE,y*TILE_SIZE,1);
-			}
+			if (renderMatrix[x][y] == 1) drawTile2D(x*TILE_SIZE,y*TILE_SIZE,1);
 
 			switch(renderMatrix[x][y])			
 			{
@@ -292,13 +278,9 @@ void drawplayer2D()
 	// Player will be a 5x5 green square
 	//(Py pos it top-left indexed)
 	v_u32 x,y;
-	for(x = (px - renderOffsetX*TILE_SIZE); x < (px - renderOffsetX*TILE_SIZE + 4); ++x){
-
-		for( y = (py - renderOffsetY*TILE_SIZE); y < (py - renderOffsetY*TILE_SIZE + 4); ++y){
-
-			SCREENBUFFER[x+y*SCREEN_W] = setColor(0,0x1F,0);
-
-		}
+	for(x = (px - renderOffsetX*TILE_SIZE); x < (px - renderOffsetX*TILE_SIZE + 4); ++x)
+	{
+		for( y = (py - renderOffsetY*TILE_SIZE); y < (py - renderOffsetY*TILE_SIZE + 4); ++y) SCREENBUFFER[x+y*SCREEN_W] = setColor(0,0x1F,0);
 	}
 
 
@@ -308,29 +290,24 @@ void clearPlayer2d()
 {
 	//Clears sets the pixels the player is standing on to the BG color
 	v_u32 x,y;
-	for(x = (px - renderOffsetX*TILE_SIZE); x < (px - renderOffsetX*TILE_SIZE + 4); ++x){
+	for(x = (px - renderOffsetX*TILE_SIZE); x < (px - renderOffsetX*TILE_SIZE + 4); ++x) 
+	{
 
-		for( y = (py - renderOffsetY*TILE_SIZE); y < (py - renderOffsetY*TILE_SIZE + 4); ++y){
+		for( y = (py - renderOffsetY*TILE_SIZE); y < (py - renderOffsetY*TILE_SIZE + 4); ++y) SCREENBUFFER[x+y*SCREEN_W] = setColor(10,10,10);
 
-			SCREENBUFFER[x+y*SCREEN_W] = setColor(10,10,10);
-
-		}
 	}
 }
 
 void drawBG2D()
 {
 	// Draws Grey BG in 2D (for Debugging)
-		v_u32 x,y;
+	v_u32 x,y;
 
-		for(x = 0; x < SCREEN_W; ++x){
+	for(x = 0; x < SCREEN_W; ++x)
+	{
+		for( y = 0; y < SCREEN_H; ++y) SCREENBUFFER[x+y*SCREEN_W] = setColor(10,10,10);
 
-			for( y = 0; y < SCREEN_H; ++y){
-
-				SCREENBUFFER[x+y*SCREEN_W] = setColor(10,10,10);
-
-			}
-		}	
+	}	
 
 }
 
@@ -365,37 +342,25 @@ bool tileCollide(v_u32 xPos, v_u32 yPos, volatile int dir)
 
 		case 0: // Left
 
-			if (stage[(xPos/TILE_SIZE)][yPos/TILE_SIZE] == 1)
-			{
-				return true;
-			}
+			if (stage[(xPos/TILE_SIZE)][yPos/TILE_SIZE] == 1) return true;
 
 			break;
 
 		case 1:  // Right
 
-			if (stage[((xPos + 4)/TILE_SIZE)][yPos/TILE_SIZE] == 1)
-			{
-				return true;
-			}
+			if (stage[((xPos + 4)/TILE_SIZE)][yPos/TILE_SIZE] == 1) return true;
 
 			break; 
 
 		case 2: 
 
-			if (stage[((xPos)/TILE_SIZE)][(yPos)/TILE_SIZE] == 1)
-			{
-				return true;
-			}
+			if (stage[((xPos)/TILE_SIZE)][(yPos)/TILE_SIZE] == 1) return true;
 
 			break; // Down
 
 		case 3: 
 
-			if (stage[(xPos/TILE_SIZE)][(yPos + 4)/TILE_SIZE] == 1)
-			{
-				return true;
-			}
+			if (stage[(xPos/TILE_SIZE)][(yPos + 4)/TILE_SIZE] == 1) return true;
 
 			break; // Up
 
@@ -404,15 +369,9 @@ bool tileCollide(v_u32 xPos, v_u32 yPos, volatile int dir)
 			if ((xPos/TILE_SIZE) % 20 == 1 || ((yPos/TILE_SIZE) % 20 == 1)) // used for left and down
 			{
 
-			if (stage[xPos/TILE_SIZE][yPos/TILE_SIZE] == 1)
-				{
-					return true;
-				}
+				if (stage[xPos/TILE_SIZE][yPos/TILE_SIZE] == 1) return true;
 
-			if (stage[xPos/TILE_SIZE][yPos/TILE_SIZE] == 1)
-				{
-					return true;
-				}
+				if (stage[xPos/TILE_SIZE][yPos/TILE_SIZE] == 1) return true;
 
 			}
 
@@ -444,37 +403,23 @@ void getInput()
 	}
 
 	if ((REG_KEYINPUT & (1 << 4)) ==  0) // Right button is pressed 
-	{
-		
-		if (tileCollide(px,py, 1) == false)
-		{
-			px = px + 1;
-		}
-
+	{	
+		if (tileCollide(px,py, 1) == false) px = px + 1;
 	}
 
 	if ((REG_KEYINPUT & (1 << 5)) ==  0) // Left button is pressed 
 	{
-		if (tileCollide(px,py, 0) == false)
-		{
-			px = px - 1;
-		}
+		if (tileCollide(px,py, 0) == false) px = px - 1;
 	}
 
 	if ((REG_KEYINPUT & (1 << 6)) ==  0) // Up button is pressed 
 	{
-		if (tileCollide(px,py, 2) == false)
-		{
-			py = py - 1;
-		}
+		if (tileCollide(px,py, 2) == false) py = py - 1;
 	}
 
 	if ((REG_KEYINPUT & (1 << 7)) ==  0) // Down button is pressed 
 	{
-		if (tileCollide(px,py, 3) == false)
-		{
-			py = py + 1;
-		}
+		if (tileCollide(px,py, 3) == false) py = py + 1;
 	}
 
 	if ((REG_KEYINPUT & (1 << 8)) ==  0) // R button is pressed 
@@ -515,14 +460,9 @@ void initStage1()
 	v_u32 x;
 	v_u32 y;
 
-	for(x = 0; x <=  STAGE_W; ++x)
+	for(x = 0; x <=  STAGE_W; ++x) 
 	{
-		for( y = 0; y <= STAGE_H; ++y)
-		{
-
-			stage[x][y] = stage1[y][x];	
-
-		}
+		for( y = 0; y <= STAGE_H; ++y) stage[x][y] = stage1[y][x];	
 	}
 
 	// initializes the player position and set rednder offset
